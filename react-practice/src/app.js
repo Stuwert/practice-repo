@@ -1,22 +1,7 @@
 ReactDOM.render(
-  <h1>Hello, world!</h1>,
+  <h1>Bug Table</h1>,
   document.getElementById('example')
 );
-
-var CommentBox = React.createClass({
-  render: function(){
-    return (
-      <div className="commentbox">
-        Hello, world! I am a CommentBox.
-      </div>
-    );
-  }
-});
-
-ReactDOM.render(
-  <CommentBox />,
-  document.getElementById('classist')
-)
 
 
 
@@ -43,40 +28,84 @@ var BugAdd = React.createClass({
 var BugRow = React.createClass({
   render: function(){
     return (
-      <tr className="bugRow">
-        <td>{this.prop.id}</td>
-        <td>{this.prop.status}</td>
-        <td>{this.prop.priority}</td>
-        <td>{this.prop.owner}</td>
-        <td>{this.prop.title}</td>
+      <tr>
+        <td>{this.props.bug.id}</td>
+        <td>{this.props.bug.status}</td>
+        <td>{this.props.bug.priority}</td>
+        <td>{this.props.bug.owner}</td>
+        <td>{this.props.bug.title}</td>
       </tr>
+    );
+  }
+})
+
+var BugTableHeader = React.createClass({
+  render: function(){
+    return (
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Status</th>
+          <th>Priority</th>
+          <th>Owner</th>
+          <th>Title</th>
+        </tr>
+      </thead>
     )
   }
 })
 
 var BugTable = React.createClass({
   render: function(){
+    var bugRows = this.props.bugs.map(function(bug){
+      return <BugRow key={bug.id} bug={bug} />
+    });
     return (
       <table className="bugTable">
+        <BugTableHeader />
         <tbody>
-          <BugRow id='' status='' priority='' owner='' title='' />
+          {bugRows}
         </tbody>
       </table>
     );
   }
 });
 
+var bugData = [
+  {id: 1, status: 'caught', priority: 'low', owner: 'bob', title: 'Butterfree'},
+  {id: 2, status: 'uncaught', priority: 'high', owner: 'ash', title:'Weedle'}
+];
+
+var nid = 3;
+
 var BugList = React.createClass({
+  getInitialState: function(){
+    return {bugs: bugData};
+  },
+  handleClick: function(){
+    this.addBug({id: nid, status: 'uncaught', priority: 'medium', owner:'Stuart', title:'Shit doesn\'t work'});
+    nid++;
+  },
+  addBug: function(obj){
+    bugData.push(obj);
+    this.setState({bugs: bugData});
+  },
   render: function(){
+    console.log("Bing Bong");
     return (
       <div className="bugList">
+        <h1>Bug Tracker</h1>
         <BugFilter />
-        <BugTable />
+        <hr />
+        <BugTable bugs={this.state.bugs} />
+        <hr />
         <BugAdd />
+        <button onClick={this.handleClick}>Add Shit</button>
       </div>
-    );
+    )
   }
 });
+
 
 ReactDOM.render(
   <BugList />,

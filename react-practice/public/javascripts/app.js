@@ -1,109 +1,167 @@
 ReactDOM.render(React.createElement(
-  'h1',
+  "h1",
   null,
-  'Hello, world!'
+  "Bug Table"
 ), document.getElementById('example'));
 
-var CommentBox = React.createClass({
-  displayName: 'CommentBox',
-
-  render: function () {
-    return React.createElement(
-      'div',
-      { className: 'commentbox' },
-      'Hello, world! I am a CommentBox.'
-    );
-  }
-});
-
-ReactDOM.render(React.createElement(CommentBox, null), document.getElementById('classist'));
-
 var BugFilter = React.createClass({
-  displayName: 'BugFilter',
+  displayName: "BugFilter",
 
   render: function () {
     return React.createElement(
-      'div',
-      { className: 'bugFilter' },
-      'A way to filter bugs will go here.'
+      "div",
+      { className: "bugFilter" },
+      "A way to filter bugs will go here."
     );
   }
 });
 
 var BugAdd = React.createClass({
-  displayName: 'BugAdd',
+  displayName: "BugAdd",
 
   render: function () {
     return React.createElement(
-      'div',
-      { className: 'bugAdd' },
-      'A way to add a bug will go here.'
+      "div",
+      { className: "bugAdd" },
+      "A way to add a bug will go here."
     );
   }
 });
 
 var BugRow = React.createClass({
-  displayName: 'BugRow',
+  displayName: "BugRow",
 
   render: function () {
     return React.createElement(
-      'tr',
-      { className: 'bugRow' },
+      "tr",
+      null,
       React.createElement(
-        'td',
+        "td",
         null,
-        this.prop.id
+        this.props.bug.id
       ),
       React.createElement(
-        'td',
+        "td",
         null,
-        this.prop.status
+        this.props.bug.status
       ),
       React.createElement(
-        'td',
+        "td",
         null,
-        this.prop.priority
+        this.props.bug.priority
       ),
       React.createElement(
-        'td',
+        "td",
         null,
-        this.prop.owner
+        this.props.bug.owner
       ),
       React.createElement(
-        'td',
+        "td",
         null,
-        this.prop.title
+        this.props.bug.title
+      )
+    );
+  }
+});
+
+var BugTableHeader = React.createClass({
+  displayName: "BugTableHeader",
+
+  render: function () {
+    return React.createElement(
+      "thead",
+      null,
+      React.createElement(
+        "tr",
+        null,
+        React.createElement(
+          "th",
+          null,
+          "Id"
+        ),
+        React.createElement(
+          "th",
+          null,
+          "Status"
+        ),
+        React.createElement(
+          "th",
+          null,
+          "Priority"
+        ),
+        React.createElement(
+          "th",
+          null,
+          "Owner"
+        ),
+        React.createElement(
+          "th",
+          null,
+          "Title"
+        )
       )
     );
   }
 });
 
 var BugTable = React.createClass({
-  displayName: 'BugTable',
+  displayName: "BugTable",
 
   render: function () {
+    var bugRows = this.props.bugs.map(function (bug) {
+      return React.createElement(BugRow, { key: bug.id, bug: bug });
+    });
     return React.createElement(
-      'table',
-      { className: 'bugTable' },
+      "table",
+      { className: "bugTable" },
+      React.createElement(BugTableHeader, null),
       React.createElement(
-        'tbody',
+        "tbody",
         null,
-        React.createElement(BugRow, { id: '', status: '', priority: '', owner: '', title: '' })
+        bugRows
       )
     );
   }
 });
 
-var BugList = React.createClass({
-  displayName: 'BugList',
+var bugData = [{ id: 1, status: 'caught', priority: 'low', owner: 'bob', title: 'Butterfree' }, { id: 2, status: 'uncaught', priority: 'high', owner: 'ash', title: 'Weedle' }];
 
+var nid = 3;
+
+var BugList = React.createClass({
+  displayName: "BugList",
+
+  getInitialState: function () {
+    return { bugs: bugData };
+  },
+  handleClick: function () {
+    this.addBug({ id: nid, status: 'uncaught', priority: 'medium', owner: 'Stuart', title: 'Shit doesn\'t work' });
+    nid++;
+  },
+  addBug: function (obj) {
+    bugData.push(obj);
+    this.setState({ bugs: bugData });
+  },
   render: function () {
+    console.log("Bing Bong");
     return React.createElement(
-      'div',
-      { className: 'bugList' },
+      "div",
+      { className: "bugList" },
+      React.createElement(
+        "h1",
+        null,
+        "Bug Tracker"
+      ),
       React.createElement(BugFilter, null),
-      React.createElement(BugTable, null),
-      React.createElement(BugAdd, null)
+      React.createElement("hr", null),
+      React.createElement(BugTable, { bugs: this.state.bugs }),
+      React.createElement("hr", null),
+      React.createElement(BugAdd, null),
+      React.createElement(
+        "button",
+        { onClick: this.handleClick },
+        "Add Shit"
+      )
     );
   }
 });
